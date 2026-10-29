@@ -46,13 +46,14 @@ test('formatProductPricing falls back when every cycle is disabled', () => {
   assert.equal(formatProductPricing({}), '-');
 });
 
-test('formatProductPricing uses the first currency, which is the WHMCS default', () => {
+test('formatProductPricing labels each currency when there are several', () => {
   const result = formatProductPricing({
-    USD: { prefix: 'US$ ', suffix: 'USD', monthly: '10.00' },
-    BRL: { prefix: 'R$ ', suffix: '', monthly: '50.00' },
+    EUR: { prefix: '€', suffix: 'EUR', monthly: '20.00', annually: '220.00' },
+    USD: { prefix: '$', suffix: 'USD', monthly: '22.00', annually: '-1.00' },
+    GBP: { prefix: '£', monthly: '-1.00' },
   });
 
-  assert.equal(result, 'US$ 10.00/mo');
+  assert.equal(result, 'EUR: €20.00/mo, €220.00/yr; USD: $22.00/mo');
 });
 
 test('formatProductPricing labels the currency when there is no prefix', () => {

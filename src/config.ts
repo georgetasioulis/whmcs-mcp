@@ -11,6 +11,9 @@ const WhmcsConfigSchema = z
     username: z.string().trim().min(1).optional(),
     password: z.string().min(1).optional(),
     apiUrl: z.string().trim().url('apiUrl must be a valid URL'),
+    readOnly: z.boolean().optional(),
+    confirmWrites: z.boolean().optional(),
+    auditLog: z.union([z.string().min(1), z.literal(false)]).optional(),
   })
   .superRefine((cfg, ctx) => {
     const hasApi = Boolean(cfg.identifier && cfg.secret);
@@ -41,6 +44,20 @@ const McpFileSchema = z.object({ whmcs: WhmcsConfigSchema });
 
 // --- env vars (standard MCP pattern) ---
 
+function envFlag(name: string): boolean | undefined {
+  const value = process.env[name]?.trim().toLowerCase();
+  if (!value) return undefined;
+  if (['1', 'true', 'yes', 'on'].includes(value)) return true;
+  if (['0', 'false', 'no', 'off'].includes(value)) return false;
+  throw new Error(`${name} must be true or false, got "${process.env[name]}"`);
+}
+
+function auditLogFromEnv(): string | false | undefined {
+  const value = process.env.WHMCS_AUDIT_LOG?.trim();
+  if (!value) return undefined;
+  return ['off', 'false', '0', 'none'].includes(value.toLowerCase()) ? false : value;
+}
+
 function loadFromEnv(): WHMCSConfig | undefined {
   const apiUrl = process.env.WHMCS_API_URL;
   if (!apiUrl) return undefined;
@@ -50,7 +67,16 @@ function loadFromEnv(): WHMCSConfig | undefined {
   const username = process.env.WHMCS_USERNAME;
   const password = process.env.WHMCS_PASSWORD;
 
-  const raw = { apiUrl, identifier, secret, username, password };
+  const raw = {
+    apiUrl,
+    identifier,
+    secret,
+    username,
+    password,
+    readOnly: envFlag('WHMCS_READ_ONLY'),
+    confirmWrites: envFlag('WHMCS_CONFIRM_WRITES'),
+    auditLog: auditLogFromEnv(),
+  };
   const result = WhmcsConfigSchema.safeParse(raw);
   if (!result.success) {
     const messages = result.error.errors.map((e) => e.message).join('; ');
