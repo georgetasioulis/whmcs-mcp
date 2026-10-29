@@ -1,7 +1,7 @@
 {
   "name": "whmcs-mcp",
   "version": "1.2.0",
-  "description": "MCP server for WHMCS API integration — 35 tools for tickets, clients, invoices, orders, and more",
+  "description": "MCP server for WHMCS: tickets, clients, services, bulk service re-pricing, orders and billing reports",
   "type": "module",
   "bin": {
     "whmcs-mcp": "./build/index.js"
@@ -40,11 +40,10 @@
   "license": "MIT",
   "author": "Caio Carvalho",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
-    "axios": "^1.7.9",
     "zod": "^3.25.76"
   },
   "devDependencies": {

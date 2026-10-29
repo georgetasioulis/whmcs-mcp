@@ -16,8 +16,8 @@
     <answer>whmcs_pending_order</answer>
   </qa_pair>
   <qa_pair>
-    <question>What is the maximum allowed limit for whmcs_get_all_unpaid_invoices_complete?</question>
-    <answer>5000</answer>
+    <question>Which parameter must be passed with apply: true for whmcs_reprice_services to write changes?</question>
+    <answer>confirm_changes</answer>
   </qa_pair>
   <qa_pair>
     <question>Which tool lists unpaid invoices with detailed client and product information?</question>
